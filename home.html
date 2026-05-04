@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EpiSim — Simulador Epidemiológico SIR</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Modelo Epidemiológico SIR</div>
+  <h1>Epi<span>Sim</span></h1>
+  <p>Simulador de Espalhamento de Doenças Infectocontagiosas &mdash; Dengue / Brasil</p>
+</header>
+
+<div class="container">
+  <div class="grid">
+
+    <!-- ─── LEFT: Controls ─── -->
+    <aside>
+      <div class="card">
+        <div class="card-title">Parâmetros</div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>População total (N)</span>
+            <span class="val" id="val-N">500.000</span>
+          </div>
+          <input type="range" id="sl-N" min="10000" max="2000000" step="10000" value="500000" />
+          <div class="control-hint">Tamanho da população simulada</div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Infectados iniciais (I₀)</span>
+            <span class="val" id="val-I0">10</span>
+          </div>
+          <input type="range" id="sl-I0" min="1" max="1000" step="1" value="10" />
+          <div class="control-hint">Número de casos no dia 0</div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Número de reprodução (R₀)</span>
+            <span class="val" id="val-R0">2.5</span>
+          </div>
+          <input type="range" id="sl-R0" min="0.5" max="10" step="0.1" value="2.5" />
+          <div class="control-hint">Dengue típica: R₀ ≈ 2–4</div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Período infeccioso (dias)</span>
+            <span class="val" id="val-gamma">7</span>
+          </div>
+          <input type="range" id="sl-gamma" min="1" max="30" step="1" value="7" />
+          <div class="control-hint">Duração média da doença (1/γ)</div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Duração da simulação (dias)</span>
+            <span class="val" id="val-days">365</span>
+          </div>
+          <input type="range" id="sl-days" min="30" max="365" step="5" value="365" />
+          <div class="control-hint">Horizonte temporal em dias</div>
+        </div>
+
+        <button class="btn-run" id="btn-run">▶ Simular</button>
+      </div>
+    </aside>
+
+    <!-- ─── RIGHT: Chart + Metrics ─── -->
+    <main>
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric peak-inf">
+          <div class="metric-label">Pico de Infectados</div>
+          <div class="metric-value" id="m-peak-val">—</div>
+          <div class="metric-sub" id="m-peak-pct">—</div>
+        </div>
+        <div class="metric peak-day">
+          <div class="metric-label">Dia do Pico</div>
+          <div class="metric-value" id="m-peak-day">—</div>
+          <div class="metric-sub">da simulação</div>
+        </div>
+        <div class="metric total-cases">
+          <div class="metric-label">Total de Casos</div>
+          <div class="metric-value" id="m-total">—</div>
+          <div class="metric-sub" id="m-total-pct">—</div>
+        </div>
+        <div class="metric herd">
+          <div class="metric-label">Limiar de Imunidade</div>
+          <div class="metric-value" id="m-herd">—</div>
+          <div class="metric-sub">da pop. vacinada/imune</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-wrap">
+        <canvas id="sir-chart"></canvas>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--s-color)"></div>
+          <span>S(t) — Suscetíveis</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--i-color)"></div>
+          <span>I(t) — Infectados</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--r-color)"></div>
+          <span>R(t) — Recuperados</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── Info Panel ─── -->
+  <div class="info-section">
+    <div class="card">
+      <h2>O que é o modelo SIR?</h2>
+      <p>
+        O modelo <strong>SIR</strong> é um dos modelos matemáticos mais utilizados em epidemiologia para descrever
+        a dinâmica de doenças infectocontagiosas em uma população. Ele divide a população em três compartimentos:
+        <strong>Suscetíveis (S)</strong> — pessoas que ainda podem ser infectadas;
+        <strong>Infectados (I)</strong> — pessoas que estão doentes e podem transmitir a doença; e
+        <strong>Recuperados (R)</strong> — pessoas que se curaram e adquiriram imunidade.
+      </p>
+      <p>O sistema é regido pelas seguintes equações diferenciais ordinárias:</p>
+      <div class="eq-block">
+        dS/dt = −β · S · I / N<br>
+        dI/dt = β · S · I / N − γ · I<br>
+        dR/dt = γ · I<br><br>
+        onde: β = R₀ · γ &nbsp;&nbsp;|&nbsp;&nbsp; γ = 1 / período infeccioso
+      </div>
+      <p>
+        O simulador utiliza o método numérico <strong>Runge-Kutta de 4ª ordem (RK4)</strong>, que oferece alta
+        precisão na integração das equações diferenciais. A cada passo de tempo (1 dia), os valores de S, I e R
+        são atualizados com base nas taxas de transmissão (β) e de recuperação (γ).
+      </p>
+
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Parâmetro</th>
+            <th>Significado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>N</td>
+            <td>Tamanho total da população. Assume-se que N = S + I + R é constante (sem nascimentos ou mortes).</td>
+          </tr>
+          <tr>
+            <td>I₀</td>
+            <td>Número de indivíduos infectados no início da simulação (dia 0). Define o "ponto de ignição" do surto.</td>
+          </tr>
+          <tr>
+            <td>R₀</td>
+            <td>Número básico de reprodução: quantas pessoas, em média, um único infectado contagia em uma população totalmente suscetível. Se R₀ > 1, há epidemia; se R₀ < 1, a doença se extingue.</td>
+          </tr>
+          <tr>
+            <td>1/γ</td>
+            <td>Período infeccioso médio em dias. Quanto mais longo, mais tempo um indivíduo permanece transmitindo a doença.</td>
+          </tr>
+          <tr>
+            <td>Limiar de imunidade coletiva</td>
+            <td>Fração da população que precisa ser imune (por infecção ou vacinação) para que o surto não se propague: 1 − 1/R₀.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:18px; font-size:13px; color: var(--muted);">
+        <strong style="color:#666">Nota:</strong> Este simulador é uma ferramenta educacional baseada em um modelo simplificado.
+        O modelo SIR clássico não contempla sazonalidade, mortalidade, vacinação progressiva, heterogeneidade espacial
+        ou populações estruturadas por idade. Para análises de saúde pública reais, modelos mais complexos (SEIR, agente-based) devem ser utilizados.
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>EpiSim &mdash; Simulador Epidemiológico SIR &nbsp;|&nbsp; Gerado com <a href="https://claude.ai" target="_blank">Claude (Anthropic)</a> &nbsp;|&nbsp; Modelo: RK4 &nbsp;|&nbsp; Dados ilustrativos &mdash; não usar para decisões clínicas</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

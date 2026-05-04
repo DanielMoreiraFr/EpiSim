@@ -1,0 +1,24 @@
+================================================================================
+  EPISIM — Infectious Disease Spread Simulator
+  SIR Epidemiological Model | Dengue Fever Context
+================================================================================
+  PROMPT USED TO GENERATE THIS CODE:
+  "You are an expert software developer and epidemiologist. I need you to create
+  a complete, self-contained interactive web application (single HTML file with
+  embedded CSS and JavaScript — no external dependencies required) that simulates
+  the spread of an infectious disease using the SIR epidemiological model
+  (Susceptible → Infected → Recovered).
+  Project name: EpiSim — Infectious Disease Spread Simulator
+  Disease context: Dengue fever in a mid-sized Brazilian city (population ~500,000)
+  Requirements:
+  1. Implement the classic SIR differential equations numerically (RK4).
+  2. Allow the user to adjust: N, I₀, R₀, infectious period, simulation duration.
+  3. Display S(t), I(t), R(t) curves using Chart.js from CDN.
+  4. Show key metrics: peak infected, day of peak, total cases, herd immunity threshold.
+  5. Clean, professional, responsive (mobile-friendly) interface.
+  6. Explanation panel in Portuguese (Brazil).
+  7. This comment block at the top."
+
+  AI TOOL USED: Claude (Anthropic) — claude-sonnet-4-6
+  DATE GENERATED: May 2026
+================================================================================
