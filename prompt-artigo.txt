@@ -1,0 +1,17 @@
+[PROMPT — ARTIGO]
+You are an expert academic writer with a background in computational epidemiology and computer science. Write a complete scientific article in Portuguese (Brazil) explaining a web-based SIR epidemic model simulator called EpiSim, developed as an undergraduate assignment.
+Article structure (follow exactly):
+
+Título (Title in Portuguese)
+Resumo (Abstract, ~150 words) + Abstract (English version, ~150 words)
+Palavras-chave (5 keywords in Portuguese) + Keywords (5 in English)
+1. Introdução — contextualize epidemic modeling, mention COVID-19 and Dengue in Brazil, state the objective of the project
+2. Fundamentação Teórica — explain the SIR model equations (S, I, R), define R₀, γ, β, herd immunity threshold
+3. Metodologia — describe the implementation: HTML/CSS/JavaScript, Euler numerical integration, parameter controls, Chart.js visualization
+4. Resultados e Discussão — describe what the simulator shows, interpret sample outputs for Dengue (R₀ ≈ 2.5, infectious period ≈ 7 days, population 500,000), discuss limitations
+5. Conclusão — summarize findings and educational value of the tool
+Referências — at least 6 real, credible references (WHO, scientific journals, books on epidemiology)
+
+Style: formal academic Portuguese, ABNT-compatible citation style inline (Author, year). Length: approximately 2,500–3,500 words total.
+At the end of the article, add a section titled "Nota metodológica" disclosing that this article was generated with AI assistance, specifying the prompt used and the AI tool name.
+Output the article in plain Markdown format.
