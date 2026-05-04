@@ -5,6 +5,11 @@
 
 ---
 
+## Projeto
+[EpiSim](https://danielmoreirafr.github.io/EpiSim/)
+
+---
+
 ## Sobre o Projeto
 
 O **EpiSim** é uma aplicação web interativa que simula a propagação de doenças infectocontagiosas utilizando o modelo epidemiológico **SIR** (Suscetíveis → Infectados → Recuperados). A ferramenta permite visualizar em tempo real como parâmetros como o número de reprodução básico (R₀) e o período infeccioso influenciam a dinâmica de uma epidemia.
